@@ -24,13 +24,17 @@ def send_req(req_data):
     if url[mode] == None:
         print("Illegal url")
 
-    print(url[mode])
+    print("\n\n" + url[mode] + "\n\n")
     r = get(url[mode])
+    
+    print(str(r) + "\n\n")
+    
+    if(mode == "write"):
+        res = f"Response : Number {r} result"             
+    elif(mode == "read_field"):
+        res = f"Response : {r.json()['feeds'][0][f'field{field}']}"
 
-    parse_methods = {
-        "read_field": f"response:{r.json()['feeds'][0][f'field{field}']}"
-    }
-
-    if r.status_code == 200:
+    if(r.status_code == 200):
         print("Connect \033[1;32;40m Success \033[0;37;40m !")
-        print(parse_methods[mode])
+        print(res)
+

@@ -13,13 +13,13 @@ class data_set:
 try:
     api_key = input("Input API Key : ")
     channel = input("Input the Channel : ")
-    result = input("Input the result : ")
+    #result = input("Input the result : ")
 except:
     print("\nStopped by User")
     exit()
 
 #req_data = data_set("XXX", "read_field", 1)
 
-req_data = data_set(api_key , "read_field" , 1)
+req_data = data_set(api_key , "write", 1 , 123 , )
 req_data.channel_id = int(channel)
 send_req(req_data)
