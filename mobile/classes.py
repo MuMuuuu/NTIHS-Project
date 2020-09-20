@@ -24,10 +24,10 @@ class UI_main_window(object):
         main_window.setObjectName("main_window")
         main_window.resize(300, 150)
 
-        self.comboBox = QtWidgets.QComboBox(main_window)
-        self.comboBox.setGeometry(QtCore.QRect(10, 20, 111, 20))
-        self.comboBox.setEditable(True)
-        self.comboBox.setObjectName("comboBox")
+        self.device_list = QtWidgets.QComboBox(main_window)
+        self.device_list.setGeometry(QtCore.QRect(10, 20, 111, 20))
+        self.device_list.setEditable(True)
+        self.device_list.setObjectName("device_list")
 
         self.control_device = QtWidgets.QPushButton(main_window)
         self.control_device.setGeometry(QtCore.QRect(140, 70, 71, 31))
@@ -46,6 +46,12 @@ class UI_main_window(object):
         self.add_device = QtWidgets.QPushButton(main_window)
         self.add_device.setGeometry(QtCore.QRect(140, 20, 75, 23))
         self.add_device.setObjectName("add_device")
+        self.add_device.clicked.connect(
+            lambda:
+                self.add_device_into_list(
+                    self.device_list.currentText()
+                )
+        )
 
         self.retranslateUi(main_window, device)
         QtCore.QMetaObject.connectSlotsByName(main_window)
@@ -66,6 +72,14 @@ class UI_main_window(object):
             text_trans = QtCore.QCoreApplication.translate
             device.setText(text_trans("", "開啟裝置"))
             self.device_status.setText(text_trans("", "裝置狀態：off"))
+
+    def add_device_into_list(self, device_name):
+        for index in range(1, self.device_list.count()):
+            if self.device_list.itemText(index) == device_name:
+                QtWidgets.QMessageBox.information(self, "蛤", "重複了啦")
+                return
+        self.device_list.addItem(device_name)
+        QtWidgets.QMessageBox.information(self, "Noise", "已成功新增裝置")
 
 
 class new_qt(QtWidgets.QMainWindow, UI_main_window):
