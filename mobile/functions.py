@@ -1,6 +1,16 @@
-from requests import *
+from requests import get
+from sys import exit, argv
+from classes import new_qt, QtWidgets, QtCore
 
-def send_req(req_data):
+
+def setup_window(device):
+    app = QtWidgets.QApplication(argv)
+    window = new_qt(device)
+    window.show()
+    exit(app.exec_())
+
+
+def send_request(req_data):
 
     api_key = req_data.api_key
     if api_key == None:
@@ -26,15 +36,14 @@ def send_req(req_data):
 
     print("\n\n" + url[mode] + "\n\n")
     r = get(url[mode])
-    
+
     print(str(r) + "\n\n")
-    
+
     if(mode == "write"):
-        res = f"Response : Number {r} result"             
+        res = f"Response : Number {r} result"
     elif(mode == "read_field"):
         res = f"Response : {r.json()['feeds'][0][f'field{field}']}"
 
     if(r.status_code == 200):
         print("Connect \033[1;32;40m Success \033[0;37;40m !")
         print(res)
-

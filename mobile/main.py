@@ -1,13 +1,11 @@
-#!/usr/bin/python3
-from req import *
 
-class data_set:
-    def __init__(self, api_key, mode, field=1, data=None, channel_id=None):
-        self.api_key = api_key
-        self.field = field
-        self.data = data
-        self.channel_id = channel_id
-        self.mode = mode
+from functions import send_request, setup_window
+from classes import data_set, device
+
+
+new_device = device("on")
+
+setup_window(new_device)
 
 
 try:
@@ -20,6 +18,6 @@ except:
 
 #req_data = data_set("XXX", "read_field", 1)
 
-req_data = data_set(api_key , "write", 1 , 123 , )
+req_data = data_set(api_key, "write", 1, 123)
 req_data.channel_id = int(channel)
-send_req(req_data)
+send_request(req_data)
