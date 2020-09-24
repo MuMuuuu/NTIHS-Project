@@ -1,7 +1,7 @@
 
 from functions import send_request, setup_window
 from classes import data_set, device
-
+from re import *
 
 new_device = device("on")
 

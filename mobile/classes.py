@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
+from re import *
 
 
 class data_set():
@@ -74,12 +75,25 @@ class UI_main_window(object):
             self.device_status.setText(text_trans("", "裝置狀態：off"))
 
     def add_device_into_list(self, device_name):
-        for index in range(1, self.device_list.count()):
+        for index in range(0, self.device_list.count()):
             if self.device_list.itemText(index) == device_name:
                 QtWidgets.QMessageBox.information(self, "蛤", "重複了啦")
                 return
+        if not self.filter(device_name):
+            QtWidgets.QMessageBox.information(self, "蛤", "打錯了啦")
+            return
         self.device_list.addItem(device_name)
-        QtWidgets.QMessageBox.information(self, "Noise", "已成功新增裝置")
+        QtWidgets.QMessageBox.information(self, "Noice", "已成功新增裝置")
+
+    def filter(self, string):
+        try:
+            assert type(string) == str
+        except:
+            return None
+        if not match("[A-Za-z0-9]{4,16}", string):
+            return False
+        else:
+            return True
 
 
 class new_qt(QtWidgets.QMainWindow, UI_main_window):
