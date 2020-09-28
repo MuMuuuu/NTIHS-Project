@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-
+from re import *
 
 class data_set():
     def __init__(self, api_key, mode, field=1, data=None, channel_id=None):
@@ -9,7 +9,6 @@ class data_set():
         self.channel_id = channel_id
         self.mode = mode
 
-
 class device():
     def __init__(self, status):
         self.status = status.lower()
@@ -17,7 +16,6 @@ class device():
             self.action = "關閉"
         elif(status.lower() == "off"):
             self.action = "開啟"
-
 
 class UI_main_window(object):
     def setupUi(self, main_window, device):
@@ -28,7 +26,7 @@ class UI_main_window(object):
         self.device_list.setGeometry(QtCore.QRect(10, 20, 111, 20))
         self.device_list.setEditable(True)
         self.device_list.setObjectName("device_list")
-
+        
         self.control_device = QtWidgets.QPushButton(main_window)
         self.control_device.setGeometry(QtCore.QRect(140, 70, 71, 31))
         self.control_device.setObjectName("control_device")
@@ -58,7 +56,7 @@ class UI_main_window(object):
 
     def retranslateUi(self, main_window, device):
         text_trans = QtCore.QCoreApplication.translate
-        main_window.setWindowTitle(text_trans("", "凱達格蘭赤腳IOT控制委員會"))
+        main_window.setWindowTitle(text_trans("", "凱達格蘭赤腳 IOT 控制委員會"))
         self.control_device.setText(text_trans("", f"{device.action}裝置"))
         self.device_status.setText(text_trans("", f"裝置狀態：{device.status}"))
         self.add_device.setText(text_trans("", "新增裝置"))
@@ -74,12 +72,25 @@ class UI_main_window(object):
             self.device_status.setText(text_trans("", "裝置狀態：off"))
 
     def add_device_into_list(self, device_name):
-        for index in range(1, self.device_list.count()):
+        for index in range(0, self.device_list.count()):
             if self.device_list.itemText(index) == device_name:
                 QtWidgets.QMessageBox.information(self, "蛤", "重複了啦")
                 return
+        if not self.filter(device_name):
+            QtWidgets.QMessageBox.information(self, "蛤", "Invalid device name")
+            return
         self.device_list.addItem(device_name)
-        QtWidgets.QMessageBox.information(self, "Noise", "已成功新增裝置")
+        QtWidgets.QMessageBox.information(self, "Noice", "已成功新增裝置")
+
+    def filter(self, string):
+        try:
+            assert type(string) == str
+        except:
+            return None
+        if not match("[A-Za-z0-9]{4,16}", string):
+            return False
+        else:
+            return True
 
 
 class new_qt(QtWidgets.QMainWindow, UI_main_window):

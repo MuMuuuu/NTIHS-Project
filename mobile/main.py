@@ -1,4 +1,4 @@
-
+#!/usr/bin/python3
 from functions import send_request, setup_window
 from classes import data_set, device
 

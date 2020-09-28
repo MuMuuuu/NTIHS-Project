@@ -2,9 +2,8 @@ from requests import get
 from sys import exit, argv
 from classes import new_qt, QtWidgets, QtCore
 
-
 def setup_window(device):
-    app = QtWidgets.QApplication(argv)
+    app = QtWidgets.QApplication(argv) #Create QT app 
     window = new_qt(device)
     window.show()
     exit(app.exec_())
@@ -47,3 +46,19 @@ def send_request(req_data):
     if(r.status_code == 200):
         print("Connect \033[1;32;40m Success \033[0;37;40m !")
         print(res)
+
+def filter(string):
+    try:
+        assert type(string) == str
+    except :
+        return None
+    if not match("[A-Za-z0-9_]{4,16}" , string):
+        return False
+    else:
+        return True 
+        
+
+
+
+
+
