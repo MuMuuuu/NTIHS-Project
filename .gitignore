@@ -1,3 +1,7 @@
 designer.exe.lnk
 setting.json
+<<<<<<< HEAD
 ./mobile/__pycache__
+=======
+__pycache__
+>>>>>>> 70012601022c2618f2fce745b506bd16768dc78a

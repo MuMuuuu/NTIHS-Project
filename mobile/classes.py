@@ -1,5 +1,9 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from re import *
+<<<<<<< HEAD
+=======
+
+>>>>>>> 70012601022c2618f2fce745b506bd16768dc78a
 
 class data_set():
     def __init__(self, api_key, mode, field=1, data=None, channel_id=None):
@@ -77,7 +81,11 @@ class UI_main_window(object):
                 QtWidgets.QMessageBox.information(self, "蛤", "重複了啦")
                 return
         if not self.filter(device_name):
+<<<<<<< HEAD
             QtWidgets.QMessageBox.information(self, "蛤", "Invalid device name")
+=======
+            QtWidgets.QMessageBox.information(self, "蛤", "打錯了啦")
+>>>>>>> 70012601022c2618f2fce745b506bd16768dc78a
             return
         self.device_list.addItem(device_name)
         QtWidgets.QMessageBox.information(self, "Noice", "已成功新增裝置")
