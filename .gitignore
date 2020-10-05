@@ -1,3 +1,4 @@
 designer.exe.lnk
 setting.json
 ./mobile/__pycache__
+./mobile/buildozer.spec

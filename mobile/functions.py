@@ -1,3 +1,4 @@
+#! -*- coding:utf-8 -*-
 from requests import get
 from sys import exit, argv
 from classes import new_qt, QtWidgets, QtCore
