@@ -68,6 +68,8 @@ class UI_main_window(object):
         main_window.setWindowTitle(text_trans("", "凱達格蘭赤腳IOT控制委員會"))
         self.add_device.setText(text_trans("", "新增裝置"))
         self.device_name.setText(text_trans("", "裝置名稱"))
+        self.control_device.setText(text_trans("", "狀態未讀取"))
+        self.device_status.setText(text_trans("", "狀態未讀取"))
         self.device_name_input_desc.setText(text_trans("", "輸入裝置名稱"))
         self.device_id_input_desc.setText(text_trans("", "輸入裝置代碼"))
 
