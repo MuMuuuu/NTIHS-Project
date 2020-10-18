@@ -48,11 +48,11 @@ class UI_main_window(object):
         self.name_input = QtWidgets.QTextEdit(main_window)
         self.name_input.setGeometry(QtCore.QRect(100, 200, 110, 30))
         self.name_input.textChanged.connect(
-          lambda:
-                self.check_str(
-                    self.name_input.toPlainText(),
-                    self.id_input.toPlainText()
-                )
+            lambda:
+            self.check_str(
+                self.name_input.toPlainText(),
+                self.id_input.toPlainText()
+            )
         )
 
         self.id_input_desc = QtWidgets.QLabel(main_window)
@@ -61,11 +61,11 @@ class UI_main_window(object):
         self.id_input = QtWidgets.QTextEdit(main_window)
         self.id_input.setGeometry(QtCore.QRect(100, 230, 110, 30))
         self.id_input.textChanged.connect(
-          lambda:
-                self.check_str(
-                    self.name_input.toPlainText(),
-                    self.id_input.toPlainText()
-                )
+            lambda:
+            self.check_str(
+                self.name_input.toPlainText(),
+                self.id_input.toPlainText()
+            )
         )
 
         self.add_device = QtWidgets.QPushButton(main_window)
@@ -93,12 +93,8 @@ class UI_main_window(object):
         main_window.setWindowTitle(text_trans("", "凱達格蘭赤腳IOT控制委員會"))
         self.add_device.setText(text_trans("", "新增裝置"))
         self.device_name.setText(text_trans("", "裝置名稱"))
-<<<<<<< HEAD
         self.control_device.setText(text_trans("", "狀態未讀取"))
         self.device_status.setText(text_trans("", "狀態未讀取"))
-        self.device_name_input_desc.setText(text_trans("", "輸入裝置名稱"))
-        self.device_id_input_desc.setText(text_trans("", "輸入裝置代碼"))
-=======
         self.name_input_desc.setText(text_trans("", "輸入裝置名稱"))
         self.id_input_desc.setText(text_trans("", "輸入裝置代碼"))
 
@@ -128,7 +124,6 @@ class UI_main_window(object):
 
         if self.name_err_tip.text() == self.id_err_tip.text() == "":
             self.add_device.setEnabled(1)
->>>>>>> 7fbd9824ce47e77e5987ea4d79717f41f55ce92f
 
     def load_status(self):
 
@@ -189,7 +184,8 @@ class UI_main_window(object):
 
         self.device_list.addItem(f"{device_name}({device_id})")
         self.clear_input()
-        QtWidgets.QMessageBox.information(self, "Noice","Success To Add New Device")
+        QtWidgets.QMessageBox.information(
+            self, "Noice", "Success To Add New Device")
 
     def clear_input(self):
         self.name_input.clear()
