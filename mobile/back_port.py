@@ -5,7 +5,16 @@ from requests import get
 from time import sleep
 
 text_trans = QtCore.QCoreApplication.translate
-status_to_text = {0: {"en": "off", "tw": "開啟"}, 1: {"en": "on", "tw": "關閉"}}
+status_to_text = {
+    0: {
+        "en": "Off",
+        "display": "Turn On"
+    },
+    1: {
+        "en": "On",
+        "display": "Turn Off "
+    }
+}
 
 
 class data_receiver(QtCore.QThread):
@@ -25,51 +34,54 @@ class data_receiver(QtCore.QThread):
 class UI_main_window(object):
     def setupUi(self, main_window):
         main_window.setObjectName("main_window")
-        main_window.resize(400, 400)
+        main_window.resize(500, 400)
 
         self.device_id = None
 
         self.device_name = QtWidgets.QLabel(main_window)
-        self.device_name.setGeometry(QtCore.QRect(10, 20, 110, 30))
+        self.device_name.setGeometry(QtCore.QRect(70, 20, 110, 30))
 
         self.device_list = QtWidgets.QComboBox(main_window)
-        self.device_list.setGeometry(QtCore.QRect(100, 20, 110, 30))
+        self.device_list.setGeometry(QtCore.QRect(190, 20, 150, 30))
+        self.device_list.setEditable(True)
+        self.device_list.lineEdit().setAlignment(QtCore.Qt.AlignCenter)
+        self.device_list.lineEdit().setReadOnly(True)
         self.device_list.currentTextChanged.connect(self.load_status)
 
         self.device_status = QtWidgets.QLabel(main_window)
-        self.device_status.setGeometry(QtCore.QRect(10, 70, 110, 30))
+        self.device_status.setGeometry(QtCore.QRect(70, 70, 110, 30))
 
         self.control_device = QtWidgets.QPushButton(main_window)
-        self.control_device.setGeometry(QtCore.QRect(100, 70, 110, 30))
+        self.control_device.setGeometry(QtCore.QRect(190, 70, 150, 30))
 
         self.name_input_desc = QtWidgets.QLabel(main_window)
-        self.name_input_desc.setGeometry(QtCore.QRect(10, 200, 110, 30))
+        self.name_input_desc.setGeometry(QtCore.QRect(70, 200, 150, 30))
 
         self.name_input = QtWidgets.QTextEdit(main_window)
-        self.name_input.setGeometry(QtCore.QRect(100, 200, 110, 30))
+        self.name_input.setGeometry(QtCore.QRect(190, 200, 150, 30))
         self.name_input.textChanged.connect(
             lambda:
-            self.check_str(
-                self.name_input.toPlainText(),
-                self.id_input.toPlainText()
-            )
+                self.check_str(
+                    self.name_input.toPlainText(),
+                    self.id_input.toPlainText()
+                )
         )
 
         self.id_input_desc = QtWidgets.QLabel(main_window)
-        self.id_input_desc.setGeometry(QtCore.QRect(10, 230, 110, 30))
+        self.id_input_desc.setGeometry(QtCore.QRect(70, 230, 150, 30))
 
         self.id_input = QtWidgets.QTextEdit(main_window)
-        self.id_input.setGeometry(QtCore.QRect(100, 230, 110, 30))
+        self.id_input.setGeometry(QtCore.QRect(190, 230, 150, 30))
         self.id_input.textChanged.connect(
             lambda:
-            self.check_str(
-                self.name_input.toPlainText(),
-                self.id_input.toPlainText()
-            )
+                self.check_str(
+                    self.name_input.toPlainText(),
+                    self.id_input.toPlainText()
+                )
         )
 
         self.add_device = QtWidgets.QPushButton(main_window)
-        self.add_device.setGeometry(QtCore.QRect(100, 280, 110, 30))
+        self.add_device.setGeometry(QtCore.QRect(190, 280, 150, 30))
         self.add_device.clicked.connect(
             lambda:
                 self.add_device_into_list(
@@ -79,51 +91,36 @@ class UI_main_window(object):
         )
 
         self.name_err_tip = QtWidgets.QLabel(main_window)
-        self.name_err_tip.setGeometry(QtCore.QRect(220, 200, 220, 30))
+        self.name_err_tip.setGeometry(QtCore.QRect(345, 200, 220, 30))
         self.name_err_tip.setStyleSheet('color:red')
 
         self.id_err_tip = QtWidgets.QLabel(main_window)
-        self.id_err_tip.setGeometry(QtCore.QRect(220, 230, 220, 30))
+        self.id_err_tip.setGeometry(QtCore.QRect(345, 230, 220, 30))
         self.id_err_tip.setStyleSheet('color:red')
+
+        self.add_device.setDisabled(1)
 
         self.retranslateUi(main_window)
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
     def retranslateUi(self, main_window):
-        main_window.setWindowTitle(text_trans("", "凱達格蘭赤腳IOT控制委員會"))
-        self.add_device.setText(text_trans("", "新增裝置"))
-        self.device_name.setText(text_trans("", "裝置名稱"))
-        self.control_device.setText(text_trans("", "狀態未讀取"))
-        self.device_status.setText(text_trans("", "狀態未讀取"))
-        self.name_input_desc.setText(text_trans("", "輸入裝置名稱"))
-        self.id_input_desc.setText(text_trans("", "輸入裝置代碼"))
+        main_window.setWindowTitle(text_trans("", "Ketagalan Barefoot IOT Control Commission"))
+        self.add_device.setText(text_trans("", "New Device"))
+        self.device_name.setText(text_trans("", "Device Name"))
+        self.control_device.setText(text_trans("", "Status Not Loaded"))
+        self.device_status.setText(text_trans("", "Status Not Loaded"))
+        self.name_input_desc.setText(text_trans("", "Input Device Name"))
+        self.id_input_desc.setText(text_trans("", "Input Device Id"))
 
     def check_str(self, device_name, device_id):
 
-        try:
-            device_id = eval(device_id)
-        except:
-            pass
-
-        self.add_device.setDisabled(1)
-
-        if (not filter(device_name)):
-            self.name_err_tip.setText(text_trans("", "Not Match Format"))
-        else:
-            self.name_err_tip.clear()
-
-        if device_id == "":
-            self.id_err_tip.setText(text_trans("", "Not Match Format"))
-        elif not (type(device_id) == int and device_id >= 1):
-            self.id_err_tip.setText(
-                text_trans("", "Positive Integer Required"))
-        elif not (4 >= device_id):
-            self.id_err_tip.setText(text_trans("", "Number Can Not Exceed 4"))
-        else:
-            self.id_err_tip.clear()
+        self.name_err_tip.setText(text_trans("", name_filter(device_name)))
+        self.id_err_tip.setText(text_trans("", id_filter(device_id)))
 
         if self.name_err_tip.text() == self.id_err_tip.text() == "":
             self.add_device.setEnabled(1)
+        else:
+            self.add_device.setDisabled(1)
 
     def load_status(self):
 
@@ -137,15 +134,13 @@ class UI_main_window(object):
         self.control_device.disconnect()
         if match("Illegal", str(result)):
             QtWidgets.QMessageBox.critical(self, "Failed", result)
-            self.device_status.setText(text_trans("", "裝置狀態讀取錯誤"))
-            self.control_device.setText(text_trans("", "讀取狀態"))
+            self.device_status.setText(text_trans("", "Status Error"))
+            self.control_device.setText(text_trans("", "Load Status"))
             self.control_device.clicked.connect(self.load_status)
             return 0
         else:
-            self.device_status.setText(
-                text_trans("", f"裝置狀態：{status_to_text[int(result)]['en']}"))
-            self.control_device.setText(
-                text_trans("", f"{status_to_text[int(result)]['tw']}裝置"))
+            self.device_status.setText(text_trans("", f"Device Status {status_to_text[int(result)]['en']}"))
+            self.control_device.setText(text_trans("",f"{status_to_text[int(result)]['display']} Device"))
             self.control_device.clicked.connect(self.change_status)
             return result
 
@@ -161,10 +156,10 @@ class UI_main_window(object):
         result = receiver.run(self, current_status, 15)
 
         if result == None:
-            QtWidgets.QMessageBox.warning(self, "Failed", "資料爆炸")
+            QtWidgets.QMessageBox.warning(self, "Failed", "Data Exploded")
         else:
-            QtWidgets.QMessageBox.information(self, "Success", "資料更改成功")
-            self.load_status()
+            QtWidgets.QMessageBox.information(self, "Success","Data Changed Successfully")
+            print("Connect \033[1;32;40m Success \033[0;37;40m !")
 
     def add_device_into_list(self, device_name, device_id):
         for index in range(0, self.device_list.count()):
@@ -184,8 +179,7 @@ class UI_main_window(object):
 
         self.device_list.addItem(f"{device_name}({device_id})")
         self.clear_input()
-        QtWidgets.QMessageBox.information(
-            self, "Noice", "Success To Add New Device")
+        QtWidgets.QMessageBox.information(self, "Noice","Success To Add New Device")
 
     def clear_input(self):
         self.name_input.clear()
@@ -210,16 +204,32 @@ class data_set():
         self.mode = mode
 
 
-def filter(string):
+def name_filter(name):
     try:
-        assert type(string) == str
+        assert type(name) == str
     except:
-        return None
+        return ""
 
-    if not match("[A-Za-z0-9]{4,16}", string):
-        return False
+    if not match("^[A-Za-z0-9]{4,16}$", name):
+        return "Not Match Format"
     else:
-        return True
+        return ""
+
+
+def id_filter(id):
+    try:
+        id = eval(id)
+    except:
+        pass
+
+    if id == "":
+        return "Not Match Format"
+    elif not (type(id) == int and id >= 1):
+        return "Positive Integer Required"
+    elif not (4 >= id):
+        return "Number Can Not Exceed 4"
+    else:
+        return ""
 
 
 def setup_window():
@@ -245,12 +255,9 @@ def send_request(req_data):
 
     raw_url = "https://api.thingspeak.com"
     url = {
-        "read_field":
-        f"{raw_url}/channels/{channel_id}/fields/{field}.json?api_key={api_key}&results=1",
-        "read_feed":
-        f"{raw_url}/channels/{channel_id}/feeds.json?api_key={api_key}&results=1",
-        "write":
-        f"{raw_url}/update?api_key={api_key}&field{field}={data}"
+        "read_field":f"{raw_url}/channels/{channel_id}/fields/{field}.json?api_key={api_key}&results=1",
+        "read_feed":f"{raw_url}/channels/{channel_id}/feeds.json?api_key={api_key}&results=1",
+        "write":f"{raw_url}/update?api_key={api_key}&field{field}={data}"
     }
 
     if url[mode] == None:
@@ -280,5 +287,4 @@ def send_request(req_data):
             print(f"load result = field{field} : {res}")
 
     if (r.status_code == 200):
-        print("Connect \033[1;32;40m Success \033[0;37;40m !")
         return res
