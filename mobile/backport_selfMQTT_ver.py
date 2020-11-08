@@ -2,19 +2,8 @@ from PyQt5 import QtWidgets, QtCore
 from re import match, findall
 from sys import exit, argv
 from time import sleep
+from queue import Queue
 import paho.mqtt.client as mqtt
-
-text_trans = QtCore.QCoreApplication.translate
-status_to_text = {
-    0: {
-        "en": "Off",
-        "display": "Turn On"
-    },
-    1: {
-        "en": "On",
-        "display": "Turn Off "
-    }
-}
 
 
 class UI_main_window(object):
@@ -23,6 +12,20 @@ class UI_main_window(object):
         main_window.resize(500, 400)
 
         self.device_id = None
+        self.client = mqtt_client(self.device_id)
+        self.server_ip = "219.68.154.148"
+        self.port = 1883
+        self.text_trans = QtCore.QCoreApplication.translate
+        self.status_to_text = {
+            0: {
+                "en": "Off",
+                "display": "Turn On"
+            },
+            1: {
+                "en": "On",
+                "display": "Turn Off "
+            }
+        }
 
         self.device_name = QtWidgets.QLabel(main_window)
         self.device_name.setGeometry(QtCore.QRect(70, 20, 110, 30))
@@ -32,7 +35,7 @@ class UI_main_window(object):
         self.device_list.setEditable(True)
         self.device_list.lineEdit().setAlignment(QtCore.Qt.AlignCenter)
         self.device_list.lineEdit().setReadOnly(True)
-        self.device_list.currentTextChanged.connect(self.load_status)
+        self.device_list.currentTextChanged.connect(self.linking)
 
         self.device_status = QtWidgets.QLabel(main_window)
         self.device_status.setGeometry(QtCore.QRect(70, 70, 110, 30))
@@ -90,58 +93,87 @@ class UI_main_window(object):
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
     def retranslateUi(self, main_window):
-        main_window.setWindowTitle(text_trans("", "Ketagalan Barefoot IOT Control Commission"))
-        self.add_device.setText(text_trans("", "New Device"))
-        self.device_name.setText(text_trans("", "Device Name"))
-        self.control_device.setText(text_trans("", "Status Not Loaded"))
-        self.device_status.setText(text_trans("", "Status Not Loaded"))
-        self.name_input_desc.setText(text_trans("", "Input Device Name"))
-        self.id_input_desc.setText(text_trans("", "Input Device Id"))
+        main_window.setWindowTitle(self.text_trans(
+            "", "Ketagalan Barefoot IOT Control Commission"))
+        self.add_device.setText(self.text_trans("", "New Device"))
+        self.device_name.setText(self.text_trans("", "Device Name"))
+        self.control_device.setText(self.text_trans("", "Status Not Loaded"))
+        self.device_status.setText(self.text_trans("", "Status Not Loaded"))
+        self.name_input_desc.setText(self.text_trans("", "Input Device Name"))
+        self.id_input_desc.setText(self.text_trans("", "Input Device Id"))
 
     def check_str(self, device_name, device_id):
 
-        self.name_err_tip.setText(text_trans("", name_filter(device_name)))
-        self.id_err_tip.setText(text_trans("", id_filter(device_id)))
+        self.name_err_tip.setText(
+            self.text_trans("", name_filter(device_name)))
+        self.id_err_tip.setText(self.text_trans("", id_filter(device_id)))
 
         if self.name_err_tip.text() == self.id_err_tip.text() == "":
             self.add_device.setEnabled(1)
         else:
             self.add_device.setDisabled(1)
 
-    def load_status(self):
+    def linking(self):
+
+        self.client.loop_stop()
 
         device_raw = self.device_list.currentText()
         self.device_id = "".join(findall("[0-9]", device_raw.split("(")[1]))
 
-        msg_data = data_set(f"{self.device_id}_feedback", "read")
-        result = send_msg(msg_data)
+        self.client.current_listening = f"{self.device_id}_feedback"
 
-        self.control_device.disconnect()
-        if match("Illegal", str(result)):
-            QtWidgets.QMessageBox.critical(self, "Failed", result)
-            self.device_status.setText(text_trans("", "Status Error"))
-            self.control_device.setText(text_trans("", "Load Status"))
-            self.control_device.clicked.connect(self.load_status)
-            return 0
-        else:
-            self.device_status.setText(text_trans("", f"Device Status {status_to_text[int(result)]['en']}"))
-            self.control_device.setText(text_trans("",f"{status_to_text[int(result)]['display']} Device"))
-            self.control_device.clicked.connect(self.change_status)
-            return result
+        self.client.connect(self.server_ip, self.port, 30)
+        self.client.loop_start()
+
+        self.client.subscribe(f"{self.device_id}_feedback")
+
+        result = int(self.client.res_temp.get())
+
+        print(f"Now {result}")
+
+        self.set_control_button(result)
 
     def change_status(self):
 
-        current_status = int(self.load_status())
+        current_status = int(not int(self.client.res_temp.get()))
 
-        msg_data = data_set(f"{self.device_id}_writein", "write", data = int(not current_status))
+        self.client.publish(f"{self.device_id}_writein", current_status)
 
-        result = send_msg(msg_data)
+        print(f"original {current_status}")
+
+        result = None
+        breaklimit = 15
+        while int(self.client.res_temp.get()) == current_status:
+            if breaklimit == 0:
+                break
+            print(f"whatnow {self.client.res_temp.get()}")
+            breaklimit -= 1
+            sleep(1)
+
+        if breaklimit != 0:
+            result = int(self.client.res_temp.get())
 
         if result == None:
             QtWidgets.QMessageBox.warning(self, "Failed", "Data Exploded")
         else:
-            QtWidgets.QMessageBox.information(self, "Success","Data Changed Successfully")
+            self.set_control_button(result)
+            QtWidgets.QMessageBox.information(
+                self, "Success", "Data Changed Successfully")
             print("Connect \033[1;32;40m Success \033[0;37;40m !")
+
+    def set_control_button(self, result):
+        self.control_device.disconnect()
+        if match("Illegal", str(result)):
+            QtWidgets.QMessageBox.critical(self, "Failed", result)
+            self.device_status.setText(self.text_trans("", "Status Error"))
+            self.control_device.setText(self.text_trans("", "Load Status"))
+            self.control_device.clicked.connect(self.linking)
+        else:
+            self.device_status.setText(self.text_trans(
+                "", f"Device Status {self.status_to_text[int(result)]['en']}"))
+            self.control_device.setText(self.text_trans(
+                "", f"{self.status_to_text[int(result)]['display']} Device"))
+            self.control_device.clicked.connect(self.change_status)
 
     def add_device_into_list(self, device_name, device_id):
         for index in range(0, self.device_list.count()):
@@ -161,7 +193,8 @@ class UI_main_window(object):
 
         self.device_list.addItem(f"{device_name}({device_id})")
         self.clear_input()
-        QtWidgets.QMessageBox.information(self, "Noice","Success To Add New Device")
+        QtWidgets.QMessageBox.information(
+            self, "Noice", "Success To Add New Device")
 
     def clear_input(self):
         self.name_input.clear()
@@ -177,14 +210,31 @@ class new_qt(QtWidgets.QMainWindow, UI_main_window):
         self.setupUi(self)
 
 
-class data_set():
-    def __init__(self, topic, mode, address="127.0.0.1", port=1883, data=None):
-        self.topic = topic
-        self.mode = mode
-        self.address = address
-        self.port = port
-        self.data = data
-        
+class mqtt_client(mqtt.Client):
+    def on_connect_callback(self, client, userdata, flags, rc):
+        print(f"Connected：{rc}")
+
+    def on_message_callback(self, client, userdata, message):
+        if self.current_listening == message.topic:
+            msg = message.payload.decode("utf-8")
+            print(f"Received：{msg}")
+            self.res_temp.put(msg)
+
+    def on_publish_callback(self, client, userdata, mid):
+        print(f"Published：{mid}")
+
+    def on_subscribe_callback(self, client, userdata, mid, granted_qos):
+        print(f"Subscribed：{mid}")
+
+    def __init__(self, id):
+        mqtt.Client.__init__(self)
+        self.current_listening = f"{id}_feedback"
+        self.res_temp = Queue()
+        self.on_connect = self.on_connect_callback
+        self.on_message = self.on_message_callback
+        self.on_publish = self.on_publish_callback
+        self.on_subscribe = self.on_subscribe_callback
+
 
 def name_filter(name):
     try:
@@ -219,55 +269,3 @@ def setup_window():
     window = new_qt()
     window.show()
     exit(app.exec_())
-
-
-def send_msg(msg_data):
-
-    mode = msg_data.mode
-    if mode == None:
-        return "Illegal mode"
-
-    topic = msg_data.topic
-    if mode == None:
-        return "Illegal topic"
-    
-    address = msg_data.address
-    port = msg_data.port
-    data = msg_data.data
-
-
-    def on_connect(client, userdata, flags, rc):
-        print(f"Connected：{rc}")
-        if (mode == "write"):
-          client.publish(topic, data)  
-        elif (mode == "read"):
-          client.subscribe(topic)
-
-    def on_message(client, userdata, message):
-        global data_temp
-        data_temp = message.payload
-        print(f"Received：{message.payload}")
-        client.unsubscribe(topic)
-        client.loop_stop()
-
-    def on_publish(client, userdata, mid):
-        print(f"Published：{mid}")
-
-    def on_subscribe(client, userdata, mid, granted_qos):
-        print(f"Subscribed：{mid}")
-
-    client = mqtt.Client()
-
-    client.connect(address, port, 30)
-    client.loop_start()
-
-    client.on_connect = on_connect
-    client.on_message = on_message
-    client.on_publish = on_publish
-    client.on_subscribe = on_subscribe
-    
-    return data_temp
-
-    
-  
-
