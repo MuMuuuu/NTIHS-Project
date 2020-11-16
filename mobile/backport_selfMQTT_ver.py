@@ -135,9 +135,10 @@ class UI_main_window(object):
 
     def change_status(self):
 
-        current_status = int(not int(self.client.res_temp.get()))
+        current_status = int(self.client.res_temp.get())
 
-        self.client.publish(f"{self.device_id}_writein", current_status)
+        self.client.publish(f"{self.device_id}_writein",
+                            int(not current_status))
 
         print(f"original {current_status}")
 
@@ -148,12 +149,13 @@ class UI_main_window(object):
                 break
             print(f"whatnow {self.client.res_temp.get()}")
             breaklimit -= 1
-            sleep(1)
+            sleep(0.5)
 
         if breaklimit != 0:
             result = int(self.client.res_temp.get())
 
         if result == None:
+            self.set_control_button("Illegal")
             QtWidgets.QMessageBox.warning(self, "Failed", "Data Exploded")
         else:
             self.set_control_button(result)
@@ -269,3 +271,7 @@ def setup_window():
     window = new_qt()
     window.show()
     exit(app.exec_())
+
+
+if __name__ == "__main__":
+    setup_window()
