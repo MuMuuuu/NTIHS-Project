@@ -5,7 +5,6 @@ from time import sleep
 from queue import Queue
 import paho.mqtt.client as mqtt
 
-
 class UI_main_window(object):
     def setupUi(self, main_window):
         main_window.setObjectName("main_window")
@@ -269,3 +268,6 @@ def setup_window():
     window = new_qt()
     window.show()
     exit(app.exec_())
+
+if __name__ = "__main__":
+    setup_window()
