@@ -269,5 +269,5 @@ def setup_window():
     window.show()
     exit(app.exec_())
 
-if __name__ = "__main__":
+if __name__ == "__main__":
     setup_window()
