@@ -14,7 +14,7 @@ class UI_main_window(object):
         self.device_id = None
         self.client = mqtt_client(self.device_id)
         self.server_ip = "219.68.154.148"
-        self.port = 1883
+        self.port = 0
         self.text_trans = QtCore.QCoreApplication.translate
         self.status_to_text = {
             0: {
@@ -121,6 +121,8 @@ class UI_main_window(object):
         self.device_id = "".join(findall("[0-9]", device_raw.split("(")[1]))
 
         self.client.current_listening = f"{self.device_id}_feedback"
+        self.port = int(f"188{self.device_id}")
+        print(self.client.current_listening)
 
         self.client.connect(self.server_ip, self.port, 30)
         self.client.loop_start()
