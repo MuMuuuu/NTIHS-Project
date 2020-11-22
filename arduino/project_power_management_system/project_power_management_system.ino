@@ -6,7 +6,8 @@ MQTTClient mqtt;
 
 char* SSIDname = "Kev";
 char* SSIDpw = "U maniac";
-int status[4] = {0, 0, 0, 0};
+
+int stat = 0;
 /*IPAddress ip(172,16,82,34);
 IPAddress gateway(172,16,82,254);
 IPAddress subnet(255,255,255,0);*/
@@ -25,17 +26,23 @@ void connect() {
   }
 
   Serial.println("\nconnected!");
+  /***************************************************************************************
+   * change dis*
+   **************************************************************************************/
+  mqtt.subscribe("4_writein", 2);
   
-  for (int i = 1; i <= 4; i++) {
-    mqtt.subscribe(String(i) + "_writein", 2);
-  }
 
 }
 
 void message_received(String &topic, String &payload) {
   Serial.println("get: " + topic + " : " + payload);
-  status[topic[0]] = payload;
+  
+  stat = char(payload[0])-'0';
+  digitalWrite(16, stat);
+
 }
+
+
 
 void setup() {
   /*myServo.attach(5); // 伺服馬達物件連接到接腳1
@@ -47,7 +54,7 @@ void setup() {
     
 //   WiFi.config(ip,gateway,subnet);
   WiFi.begin(SSIDname,SSIDpw);
-  mqtt.begin("127.0.0.1", client);
+  mqtt.begin("219.68.154.148", client);
   mqtt.onMessage(message_received);
   
   connect();
@@ -60,17 +67,20 @@ void loop() {
   while (!mqtt.connected()) {
     connect();
   }
+
+
+
+  /***************************************************************************************
+   * change dis*
+   **************************************************************************************/
+
+  mqtt.publish("4_feedback", String(stat), 10, 2);
   
-  //four pin write in from array status
-  
-  for (int i = 1; i <= 4; i++) {
-    mqtt.publish(String(i) + "_feedback", status[i-1], 10, 2);
-  }
   
 
   
   /*myServo.write(thingSpeakValue.toInt);*/
-  delay(1000);
+  delay(500);
   /*digitalWrite(16,HIGH);  
   digitalWrite(10,HIGH);  
   delay(200);
