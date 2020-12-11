@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<head>
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <script src="../assets/js/mqtt.min.js"></script>
+</head>
+
+<body>
+
+  <div id="topic">Ketagalan Barefoot <br> IOT Control Commission</div>
+
+  <div class="main">
+    <div class="line">
+      <div class="title">Device Name</div>
+      <select class="content" id="device_list"></select>
+    </div>
+
+    <div class="line">
+      <div class="title" id="status">Status Not Loaded</div>
+      <button class="content" id="change">Status Not Loaded</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="line">
+      <div class="title">Input Device Name</div>
+      <input type="text" class="content" id="input_name">
+      <div class="err_msg" id="name_err_msg"></div>
+    </div>
+
+    <div class="line">
+      <div class="title">Input Device ID</div>
+      <input type="text" class="content" id="input_id">
+      <div class="err_msg" id="id_err_msg"></div>
+    </div>
+
+    <div class="line">
+      <button class="content" id="add_device">New Device</button>
+    </div>
+  </div>
+
+
+
+  <script src="../main.js"></script>
+</body>
+
+
+
+</html>
