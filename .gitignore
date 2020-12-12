@@ -1,3 +1,7 @@
-mobile/__pycache__
-moblie/javascript&html_ver/dist
-mobile/buildozer.spec
+__pycache__
+dist/
+node_modules/
+buildozer.spec
+package-lock.json
+package.json
+icon/
