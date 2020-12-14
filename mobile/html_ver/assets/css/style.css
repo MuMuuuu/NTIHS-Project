@@ -1,0 +1,75 @@
+input {
+    width: 150px;
+    font-size: 16px;
+    cursor: text;
+    text-shadow: none;
+}
+
+button {
+    border-color: white;
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+button,
+select {
+    width: 170px;
+}
+
+.main {
+    width: auto;
+    max-width: 560px;
+    margin: 70px auto;
+}
+
+.line {
+    width: auto;
+    height: 50px;
+    margin: 12px 0px;
+}
+
+.title {
+    padding: 8px 0px;
+    margin: 12px 0px;
+    float: left;
+}
+
+.content {
+    padding: 0px 8px;
+    margin: 12px 0px;
+    height: 30px;
+    border-radius: 10px;
+    outline: 0px;
+    float: right;
+}
+
+.err_msg {
+    color: red;
+    float: right;
+}
+
+#topic {
+    text-align: center;
+    font-size: 36px;
+}
+
+#connect_msg {
+    text-align: center;
+
+}
+
+.green {
+    color: #63a303;
+
+}
+
+.red {
+    color: #f24949;
+}
+
+.yellow {
+    color: #ffd700;
+}
