@@ -28,24 +28,18 @@ async function page_init() {
 
 function change_status() {
 
-	let combobox = get_node(`#device_list`);
-	let id = combobox.selectedOptions[0].id;
+	let send_status = ["1", "0"][parseInt(get_node(`#status`).status)];
 
-	let send_status = [1, 0][parseInt(get_node(`#status`).status)];
-
-	mqtt_client.publish(`${id}_writein`, send_status, { "qos": 2 });
+	mqtt_client.publish(`writein/${get_id()}`, send_status, { "qos": 2 });
 }
 
 function load_status() {
 
-	let combobox = get_node(`#device_list`);
-	let id = combobox.selectedOptions[0].id;
-
-	for (let option of combobox.options) {
-		mqtt_client.unsubscribe(`${option.id}_feedback`, { "qos": 2 });
+	for (let option of get_node(`#device_list`).options) {
+		mqtt_client.unsubscribe(`feedback/${option.id}`, { "qos": 2 });
 	}
 
-	mqtt_client.subscribe(`${id}_feedback`, { "qos": 2 });
+	mqtt_client.subscribe(`feedback/${get_id()}`, { "qos": 2 });
 
 }
 
@@ -131,6 +125,10 @@ function get_node(selector) {
 	else return list;
 }
 
+function get_id() {
+	let combobox = get_node(`#device_list`);
+	return combobox.selectedOptions[0].id;
+}
 
 function new_mqtt(ip, port, ID) {
 	let param = {
@@ -143,17 +141,17 @@ function new_mqtt(ip, port, ID) {
 	let connect_msg = get_node("#connect_msg");
 
 	client.on("connect", () => {
-		connect_msg.classList = ["green"];
+		connect_msg.className = "green";
 		connect_msg.innerText = "🔴Connect successfully.";
 	});
 
 	client.on("close", () => {
-		connect_msg.classList = ["red"];
+		connect_msg.className = "red";
 		connect_msg.innerText = "🔴Connection closed.";
 	});
 
 	client.on("reconnect", () => {
-		connect_msg.classList = ["yellow"];
+		connect_msg.className = "yellow";
 		connect_msg.innerText = "🔴Reconnecting.";
 	});
 
@@ -162,18 +160,18 @@ function new_mqtt(ip, port, ID) {
 		if (msg.toString().match(/^[0-1]$/)) {
 			let status_converter = {
 				0: {
-					"en": "Off",
-					"display": "Turn On"
+					"color": "red",
+					"text": "Turn On"
 				},
 				1: {
-					"en": "On",
-					"display": "Turn Off "
+					"color": "green",
+					"text": "Turn Off "
 				}
 			};
 			let status = status_converter[msg.toString()];
 			get_node(`#status`).status = msg.toString();
-			get_node(`#status`).innerHTML = `Device Status ${status.en}`;
-			get_node(`#change`).innerHTML = `${status.display} Device`;
+			get_node(`#status`).className = `title ${status.color}`;
+			get_node(`#change`).innerHTML = `${status.text} Device`;
 		}
 	});
 

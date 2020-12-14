@@ -1,3 +1,7 @@
+div {
+    text-align: center;
+}
+
 input {
     width: 150px;
     font-size: 16px;
@@ -52,13 +56,11 @@ select {
 }
 
 #topic {
-    text-align: center;
     font-size: 36px;
 }
 
-#connect_msg {
-    text-align: center;
-
+#status {
+    padding: 6px 0px 0px 8px;
 }
 
 .green {
