@@ -26,7 +26,7 @@ select {
 .main {
     width: auto;
     max-width: 560px;
-    margin: 70px auto;
+    margin: 120px auto 40px;
 }
 
 .line {
@@ -53,14 +53,18 @@ select {
 .err_msg {
     color: red;
     float: right;
+    padding-top: 18px;
+    padding-right: 8px;
 }
 
-#topic {
+#topic,
+#message {
     font-size: 36px;
 }
 
 #status {
-    padding: 6px 0px 0px 8px;
+    padding-top: 6px;
+    padding-left: 8px
 }
 
 .green {
@@ -73,5 +77,5 @@ select {
 }
 
 .yellow {
-    color: #ffd700;
+    color: #e4b45b;
 }
