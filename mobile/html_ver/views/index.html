@@ -4,30 +4,43 @@
   <meta charset="UTF-8">
   <link href="../assets/css/style.css" rel="stylesheet">
   <script src="../assets/js/mqtt.min.js"></script>
+  <script src="../assets/js/func.js"></script>
+  <script src="../assets/js/operate.js"></script>
+  <script src="../assets/js/client.js"></script>
 </head>
 
-<body>
+<body class="dark_mode">
 
   <div id="topic">Ketagalan Barefoot <br> IOT Control Commission</div>
 
+  <div>
+    <button id="mode_button">light mode</button>
+  </div>
+
   <div class="main">
 
-    <div id="connect_msg"></div>
-
-    <div class="line">
-      <div class="title">Device Name</div>
-      <select class="content" id="device_list"></select>
+    <div id="connect_line">
+      <div class="light yellow" id="connect_light"></div>
+      <div class="yellow" id="connect_msg">Connecting to mqtt server.</div>
     </div>
 
     <div class="line">
-      <div class="title">Device Status</div>
-      <div class="title yellow" id="status">🔴</div>
+      <div class="title">Device Name</div>
+      <button class="content" id="delete">Delete</button>
+      <select class="content" id="device_list"></select>
+
+    </div>
+
+    <div class="line">
+      <div class="title">Device Status:</div>
+      <div id="status_light" class="light yellow"></div>
+      <div id="status_msg">(not connected)</div>
       <button class="content" id="change">Load Status</button>
     </div>
 
     <div class="line">
-      <div class="title">Current Status：</div>
-      <div class="title green" id="current"></div>
+      <div class="title">Current Status:</div>
+      <div id="current" class="title yellow">0/0 (mA)</div>
       <input type="text" class="content" id="input_limit">
       <div class="err_msg" id="limit_err_msg"></div>
     </div>
@@ -49,7 +62,7 @@
     </div>
 
     <div class="line">
-      <button class="content" id="add_device">New Device</button>
+      <button class="content" id="add_device">Add New Device</button>
     </div>
   </div>
 

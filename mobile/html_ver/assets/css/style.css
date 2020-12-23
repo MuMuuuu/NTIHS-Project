@@ -1,3 +1,9 @@
+:root {
+    --btn_color: #000000;
+    --bg_color: #FFFFFF;
+    --btn_bg_color: #e1e1eb;
+}
+
 div {
     text-align: center;
 }
@@ -10,6 +16,8 @@ input {
 }
 
 button {
+    color: var(--btn_color);
+    background-color: var(--btn_bg_color);
     border-color: white;
     cursor: pointer;
 }
@@ -23,13 +31,34 @@ select {
     width: 170px;
 }
 
+button,
+select,
+input {
+    height: 30px;
+    border-radius: 10px;
+    outline: 0px;
+}
+
+.dark_mode {
+    --color: #FFFFFF;
+    --bg_color: #3e3e45;
+    --btn_color: #f5ebeb;
+    --btn_bg_color: #5c5c61;
+}
+
+
+body {
+    background-color: var(--bg_color);
+    color: var(--color);
+}
+
 .main {
-    width: auto;
-    max-width: 560px;
+    width: 600px;
     margin: 120px auto 40px;
 }
 
-.line {
+.line,
+.connect {
     width: auto;
     height: 50px;
     margin: 12px 0px;
@@ -38,15 +67,14 @@ select {
 .title {
     padding: 8px 0px;
     margin: 12px 0px;
+    margin-left: 60px;
     float: left;
 }
 
 .content {
     padding: 0px 8px;
     margin: 12px 0px;
-    height: 30px;
-    border-radius: 10px;
-    outline: 0px;
+    margin-right: 60px;
     float: right;
 }
 
@@ -62,14 +90,50 @@ select {
     font-size: 36px;
 }
 
-#status {
-    padding-top: 6px;
-    padding-left: 8px
+
+
+#connect_line {
+    width: 320px;
+    margin: auto;
+}
+
+#status_msg,
+#status_light {
+    margin-top: 22px;
+    float: left;
+}
+
+#delete,
+#current,
+#device_list {
+    margin: 12px 0px;
+}
+
+#delete {
+    width: auto;
+}
+
+.light {
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    float: left;
+}
+
+.light.green {
+    background: #63a303;
+}
+
+.light.red {
+    background: #f24949;
+}
+
+.light.yellow {
+    background: #e4b45b;
 }
 
 .green {
     color: #63a303;
-
 }
 
 .red {
