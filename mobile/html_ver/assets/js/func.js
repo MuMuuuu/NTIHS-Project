@@ -9,8 +9,10 @@ function new_node(tagname, { classlist = [], ...properties }) {
     return node;
 }
 
-function get(selector) {
-    let list = document.querySelectorAll(selector);
+function get(selector, ref = this) {
+    ref == window ? ref = document : ref;
+    let list = ref.querySelectorAll(selector);
+    list.forEach(e => e.get = get);
     if (list.length == 1) return list[0];
     else return list;
 }

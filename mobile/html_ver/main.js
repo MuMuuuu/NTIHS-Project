@@ -7,7 +7,7 @@ async function page_init() {
 
 	get(`#mode_button`).mode = 0;
 
-	get(`#mode_button`).addEventListener("click", () => mode_switch(get(`#mode_button`).mode));
+	get(`#mode_button`).addEventListener("click", () => switch_bg(get(`#mode_button`).mode));
 
 	get(`#device_list`).addEventListener("change", () => load_status());
 
@@ -27,19 +27,20 @@ async function page_init() {
 	get(`#delete`).addEventListener("click", () => {
 		if (confirm(`Delete ${get_device().value} ?`)) {
 			get(`#device_list`).remove(get_device().index);
-			load_status(true);
+			load_status();
 			update_storage();
 			check_list();
 		}
 	});
 
 	["name", "id", "limit"].forEach(type => {
+		get(`#input_${type}`).invalid = true;
 		get(`#input_${type}`).addEventListener("input", () => check_input(get(`#input_${type}`)));
 	});
 
 }
 
-function mode_switch(mode) {
+function switch_bg(mode) {
 
 	let modes = ["light", "dark"];
 	get(`body`).className = `${modes[mode]}_mode`;

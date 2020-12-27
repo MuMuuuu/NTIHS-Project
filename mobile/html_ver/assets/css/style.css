@@ -1,7 +1,12 @@
 :root {
-    --btn_color: #000000;
     --bg_color: #FFFFFF;
+    --btn_color: #000000;
     --btn_bg_color: #e1e1eb;
+    --btn_dis_bg_color: #d5d5da;
+    --input_color: #000000;
+    --input_bg_color: #ffffff;
+    --cbbox_color: #3d3838;
+    --cbbox_bg_color: #ffffff;
 }
 
 div {
@@ -9,10 +14,17 @@ div {
 }
 
 input {
+    color: var(--input_color);
+    background-color: var(--input_bg_color);
     width: 150px;
     font-size: 16px;
     cursor: text;
     text-shadow: none;
+}
+
+select {
+    color: var(--cbbox_color);
+    background-color: var(--cbbox_bg_color);
 }
 
 button {
@@ -23,6 +35,8 @@ button {
 }
 
 button:disabled {
+    color: white;
+    background-color: var(--btn_dis_bg_color);
     cursor: not-allowed;
 }
 
@@ -42,8 +56,13 @@ input {
 .dark_mode {
     --color: #FFFFFF;
     --bg_color: #3e3e45;
-    --btn_color: #f5ebeb;
+    --btn_color: #ffffff;
     --btn_bg_color: #5c5c61;
+    --btn_dis_bg_color: #c6c6c6;
+    --input_color: #ffffff;
+    --input_bg_color: #414242;
+    --cbbox_color: #ffffff;
+    --cbbox_bg_color: #3d3838;
 }
 
 

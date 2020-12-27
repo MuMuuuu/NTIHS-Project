@@ -110,7 +110,7 @@ function send(type, send_status, ch = "write") {
     mqtt_client.publish(`${ch}/${type}/${get_device().id}`, `${send_status}`, { "qos": 2 });
 }
 
-function load_status(reset = false) {
+function load_status() {
     let type_list = ["current", "relay", "limit"];
 
     type_list.forEach(type => {
@@ -119,7 +119,7 @@ function load_status(reset = false) {
             mqtt_client.unsubscribe(`feedback/${type}/${option.id}`, { "qos": 2 });
         }
 
-        send(type, reset ? "error" : get_device()[type] || 0, "feedback");
+        send(type, get_device()[type] ? get_device()[type] : "error", "feedback");
         mqtt_client.subscribe(`feedback/${type}/${get_device().id}`, { "qos": 2 });
     });
 
