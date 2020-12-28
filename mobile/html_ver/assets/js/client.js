@@ -119,7 +119,6 @@ function load_status() {
             mqtt_client.unsubscribe(`feedback/${type}/${option.id}`, { "qos": 2 });
         }
 
-        send(type, get_device()[type] ? get_device()[type] : "error", "feedback");
         mqtt_client.subscribe(`feedback/${type}/${get_device().id}`, { "qos": 2 });
     });
 

@@ -14,7 +14,7 @@ async function page_init() {
 	get(`#add_device`).addEventListener("click", () => add_new_device());
 
 	get(`#change`).addEventListener("click", () => {
-		if (get("#status").status == undefined) load_status();
+		if (get_device().relay == undefined) load_status();
 		else send("relay", ["1", "0"][parseInt(get_device().relay)]);
 	});
 
